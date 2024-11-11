@@ -14,6 +14,8 @@ module {
     fullName : Text,
     password : Text,
     dob : Text,
+    maritalStatus : Text,
+    gender : Text,
     address : Text,
     czid : Text,
     nid : Text,
@@ -40,7 +42,7 @@ module {
           isVerified = false;
           email = ?"";
           phoneNumber = ?"";
-          role = #Citizen;
+          role = "user";
           documents = [];
           transactions = [];
           properties = [];
@@ -49,6 +51,11 @@ module {
           dp;
           pan = ?pan;
           createdAt;
+          maritalStatus;
+          gender;
+          lastLogin = null;
+          verificationDate = null;
+          connections = [];
         };
         return {
           message = "200";

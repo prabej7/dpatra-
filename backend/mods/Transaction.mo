@@ -28,14 +28,7 @@ module {
                 to = { id = t; fullName = to.fullName };
                 from = { id = f; fullName = from.fullName };
                 amount = amount;
-                purpose = switch (purpose) {
-                  case "Tax" { #Tax };
-                  case "Purchase" { #Purchase };
-                  case "Donation" { #Donation };
-                  case "Transfer" { #Transfer };
-                  case "Other" { #Other };
-                  case _ { #Other };
-                };
+                purpose;
                 createdAt = createdAt;
               };
 

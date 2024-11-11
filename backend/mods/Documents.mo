@@ -3,6 +3,7 @@ import { emptyDocument; emptyUser } "Empty";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
+import HashIt "HashIt";
 
 module {
   type AddDocumentResponse = {
@@ -17,6 +18,8 @@ module {
     id : Text,
     name : Text,
     img : [Nat8],
+    dtype : Text,
+    isVerified : Bool,
     createdAt : Text,
   ) : async AddDocumentResponse {
     switch (users.get(token)) {
@@ -36,10 +39,12 @@ module {
           case (null) {
 
             let newDocument : Types.Document = {
-              id = id;
-              name = name;
-              img = img;
+              id = await HashIt.hash(id);
+              name;
+              img;
               createdAt;
+              isVerified;
+              dtype;
             };
 
             documents.put(id, newDocument);

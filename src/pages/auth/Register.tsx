@@ -32,7 +32,7 @@ type formFiled = z.infer<typeof schema>;
 const Register: React.FC = () => {
     const [phase, setPhase] = React.useState<Phase>(1);
     const [dp, setDP] = useState<File>();
-    // Initialize useForm with Zod schema
+    
     const { register, handleSubmit, formState: { errors }, getValues, setError } = useForm<formFiled>({
         resolver: zodResolver(schema),
     });

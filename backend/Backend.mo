@@ -21,6 +21,8 @@ actor class Backend() {
     fullName : Text,
     password : Text,
     dob : Text,
+    maritalStatus : Text,
+    gender : Text,
     address : Text,
     czid : Text,
     nid : Text,
@@ -28,7 +30,7 @@ actor class Backend() {
     dp : [Nat8],
     createdAt : Text,
   ) : async RegisterUserResponse {
-    let { message; user } = await User.register(users, fullName, password, dob, address, czid, nid, pan, dp, createdAt);
+    let { message; user } = await User.register(users, fullName, password, dob, maritalStatus, gender, address, czid, nid, pan, dp, createdAt);
 
     if (message == "200") {
       users.put(user.id, user);
@@ -68,8 +70,8 @@ actor class Backend() {
     return message;
   };
 
-  public func addDoc(token : Text, id : Text, name : Text, img : [Nat8], createdAt : Text) : async Text {
-    let { message; document; user } = await Documents.addDocuments(users, token, id, name, img, createdAt);
+  public func addDoc(token : Text, id : Text, name : Text, img : [Nat8], dtype : Text, isVerified : Bool, createdAt : Text) : async Text {
+    let { message; document; user } = await Documents.addDocuments(users, token, id, name, img, dtype, isVerified, createdAt);
 
     if (message == "200") {
       users.put(user.id, user);
@@ -89,6 +91,7 @@ actor class Backend() {
     message;
   };
 
+  //Query Functions
   type GetUserResponse = {
     message : Text;
     user : Types.User;

@@ -1,12 +1,16 @@
 import HashMap "mo:base/HashMap";
+import Bool "mo:base/Bool";
 module {
 
   public type Users = HashMap.HashMap<Text, User>;
   public type Documents = HashMap.HashMap<Text, Document>;
+
   public type User = {
     id : Text;
     fullName : Text;
     passwordHash : Text;
+    gender : Text;
+    maritalStatus : Text;
     dob : Text;
     address : Text;
     czid : Text;
@@ -15,25 +19,24 @@ module {
     isVerified : Bool;
     email : ?Text;
     phoneNumber : ?Text;
-    role : Role;
+    role : Text;
     documents : [(Text, Document)];
     transactions : [(Text, Transaction)];
     properties : [(Text, Property)];
     access : [Text];
     balance : Nat;
     dp : [Nat8];
+    connections : [Text];
+    lastLogin : ?Text;
+    verificationDate : ?Text;
     createdAt : Text;
-  };
-
-  public type Role = {
-    #Citizen;
-    #Admin;
-    #Official;
   };
 
   public type Document = {
     id : Text;
     name : Text;
+    dtype : Text;
+    isVerified : Bool;
     img : [Nat8];
     createdAt : Text;
   };
@@ -43,7 +46,7 @@ module {
     to : UserSummary;
     from : UserSummary;
     amount : Nat;
-    purpose : Purpose;
+    purpose : Text;
     createdAt : Text;
   };
 
@@ -52,30 +55,15 @@ module {
     fullName : Text;
   };
 
-  public type Purpose = {
-    #Tax;
-    #Purchase;
-    #Donation;
-    #Transfer;
-    #Other;
-  };
-
   public type Property = {
     id : Text;
     owner : UserSummary;
     regNo : Text;
     img : [Nat8];
     valuation : Nat;
-    proptype : PropertyType;
+    proptype : Text;
     coordinates : ?Coordinates;
     createdAt : Nat;
-  };
-
-  public type PropertyType = {
-    #Residential;
-    #Commercial;
-    #Agricultural;
-    #Industrial;
   };
 
   public type Coordinates = {
