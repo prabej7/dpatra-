@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRightIcon, PanelTopDashed } from "lucide-react";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { backend } from "@/declarations/export";
+import { useCookies } from "react-cookie";
 
 // Define Zod schema
 const schema = z.object({
@@ -13,9 +15,11 @@ const schema = z.object({
     month: z.string().min(1, "Month is required"),
     day: z.string().min(1, "Day is required"),
     address: z.string().min(1, "Address is required"),
-    czid: z.string().optional(),
-    nid: z.string().optional(),
-    pan: z.string().optional(),
+    czid: z.string().min(1, { message: "Citizenship is required." }),
+    nid: z.string().min(1, { message: "NID is required." }),
+    pan: z.string().min(1, { message: "PAN is required." }),
+    gender: z.string().min(1, { message: "Gender is required." }),
+    martialStatus: z.string().min(1, { message: "Martial Status is required." }),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm password is required"),
 
@@ -31,23 +35,44 @@ type formFiled = z.infer<typeof schema>;
 
 const Register: React.FC = () => {
     const [phase, setPhase] = React.useState<Phase>(1);
-    const [dp, setDP] = useState<File>();
-    
-    const { register, handleSubmit, formState: { errors }, getValues, setError } = useForm<formFiled>({
+    const [dp, setDP] = useState<number[]>([]);
+    const [_, setCookie] = useCookies(['token']);
+    const { register, handleSubmit, formState: { errors, isSubmitting }, getValues, setError } = useForm<formFiled>({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: any) => {
-        
+
+    const onSubmit = async (data: formFiled) => {
+        const { address, password, day, fullname, gender, martialStatus, month, year, czid, nid, pan } = data;
+
+        try {
+            const { message, token } = await backend.registerUser(fullname, password, `${year}-${month}-${day}`, martialStatus, gender, address, String(czid), nid, pan, dp, "user", String(new Date()));
+            console.log(message, token);
+            if (message == "200") {
+                setError('root', { message: token });
+                setCookie('token', String(token));
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
 
     };
 
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const { files } = e.target;
+        if (files && files[0]) {
+            const imageByteData: number[] = [...new Uint8Array(await files[0].arrayBuffer())];
+            setDP(imageByteData);
+        }
+    }
+
     const handlePhaseChange = (phase: number) => {
-        const { address, confirmPassword, day, fullname, month, password, year, czid, nid, pan } = getValues();
+        const { address, password, day, fullname, month, year, czid, nid, pan, gender, martialStatus } = getValues();
         if (phase == 2 && fullname && year && month && day && address) {
             setError('root', { message: "" });
             return setPhase(phase as Phase);
-        } else if (phase == 3 && czid && nid && pan) {
+        } else if (phase == 3 && czid && nid && pan && gender && martialStatus) {
             setError('root', { message: "" });
             return setPhase(phase as Phase);
         }
@@ -88,7 +113,10 @@ const Register: React.FC = () => {
                                 <Input placeholder="NID No." {...register("nid")} />
                                 <Input placeholder="PAN No." {...register("pan")} />
                             </div>
-
+                            <div className="flex gap-6" >
+                                <Input placeholder="Gender" {...register("gender")} />
+                                <Input placeholder="Martial Status" {...register("martialStatus")} />
+                            </div>
                             <Button type="button" variant="pri" onClick={() => handlePhaseChange(3)}>
                                 Next <ArrowRightIcon size={20} />
                             </Button>
@@ -99,18 +127,14 @@ const Register: React.FC = () => {
                         <>
                             {errors.password && <p className="text-red-500" >{errors.password.message}</p>}
                             {errors.confirmPassword && <p className="text-red-500" >{errors.confirmPassword.message}</p>}
-                            <Input type="file" onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                    setDP(e.target.files[0]);
-                                }
-                            }} />
+                            <Input type="file" onChange={handleFileChange} />
                             <div className="flex gap-3">
                                 <Input type="password" placeholder="New Password" {...register("password")} />
                                 <Input type="password" placeholder="Confirm Password" {...register("confirmPassword")} />
                             </div>
 
 
-                            <Button type="submit" variant="pri">
+                            <Button disabled={isSubmitting} type="submit" variant="pri">
                                 Submit <ArrowRightIcon size={20} />
                             </Button>
                         </>

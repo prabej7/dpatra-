@@ -21,6 +21,7 @@ module {
     nid : Text,
     pan : Text,
     dp : [Nat8],
+    role : Text,
     createdAt : Text,
   ) : async RegisterResponse {
     switch (users.get(await HashIt.hash(czid))) {
@@ -42,7 +43,7 @@ module {
           isVerified = false;
           email = ?"";
           phoneNumber = ?"";
-          role = "user";
+          role = role;
           documents = [];
           transactions = [];
           properties = [];

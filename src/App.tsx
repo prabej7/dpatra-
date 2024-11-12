@@ -1,11 +1,23 @@
 import { Route, RouteProps, Routes } from 'react-router-dom';
 import './App.css';
-import { Register } from './pages';
+import { Account, Citizens, Login, Register } from './pages';
 
 const routes: RouteProps[] = [
   {
     path: "/register",
     element: <Register />
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: "/account",
+    element: <Account />
+  },
+  {
+    path: "/account/citizens",
+    element: <Citizens />
   }
 ]
 

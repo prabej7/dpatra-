@@ -1,5 +1,6 @@
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
+import Iter "mo:base/Iter";
 import Types "types/Types";
 import User "mods/User";
 import Transaction "mods/Transaction";
@@ -28,9 +29,10 @@ actor class Backend() {
     nid : Text,
     pan : Text,
     dp : [Nat8],
+    role : Text,
     createdAt : Text,
   ) : async RegisterUserResponse {
-    let { message; user } = await User.register(users, fullName, password, dob, maritalStatus, gender, address, czid, nid, pan, dp, createdAt);
+    let { message; user } = await User.register(users, fullName, password, dob, maritalStatus, gender, address, czid, nid, pan, dp, role, createdAt);
 
     if (message == "200") {
       users.put(user.id, user);
@@ -138,6 +140,10 @@ actor class Backend() {
         };
       };
     };
+  };
+
+  public query func getAllUser() : async [(Text, Types.User)] {
+    return Iter.toArray(users.entries());
   };
 
 };
