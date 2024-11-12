@@ -1,4 +1,10 @@
 import Register from "@/components/pages/auth/Register";
 import AppSidebar from "./Sidebar";
 import Section from "./Section";
-export { Register }
+import Table from "./user/Table";
+import Dialogue from "./user/Dialogue";
+import Card from "./user/Card";
+import UserInfos from "./pages/dashboard/Head";
+import Sheets from "./user/Sheet";
+
+export { Register, Table, Section, AppSidebar, Dialogue, Card, UserInfos, Sheets }

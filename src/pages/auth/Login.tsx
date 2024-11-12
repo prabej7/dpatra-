@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { backend } from "@/declarations/export";
+import { useQueryCall } from "@ic-reactor/react";
 import { FormEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ const Login: React.FC = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [_, setCookie] = useCookies(['token']);
     const navigate = useNavigate();
+
     const [error, setError] = useState<{
         text: string;
         color: string;
@@ -20,6 +22,11 @@ const Login: React.FC = () => {
         color: "",
         text: ""
     });
+
+    const { data } = useQueryCall({
+        functionName: 'getAllUser'
+    });
+
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();

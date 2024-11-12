@@ -12,4 +12,12 @@
     font-family: geist;
 }
 
+@layer utilities {
+  .text-gradient {
+    @apply  inline-block text-transparent bg-clip-text;
+    background-image: linear-gradient(to bottom, #86efac, #16a34a); /* green-300 to green-700 */
+  }
+}
+
+
 

@@ -1,4 +1,5 @@
 
+import { UserInfos } from "@/components";
 import Section from "@/components/Section";
 import { useAuth } from "@/hooks";
 import { useUser } from "@/store";
@@ -14,7 +15,7 @@ const Account: React.FC = () => {
     const img = convertDP(user.dp);
 
     return <Section selected="Dashboard" title="Dashboard" >
-        <div></div>
+        <UserInfos />
     </Section>
 };
 
