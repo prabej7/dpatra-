@@ -1,11 +1,12 @@
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
+import Debug "mo:base/Debug";
 import Types "types/Types";
 import User "mods/User";
 import Transaction "mods/Transaction";
 import Documents "mods/Documents";
-import { emptyUser } "mods/Empty";
+import { emptyUser; emptyDocument } "mods/Empty";
 import Access "mods/Access";
 
 actor class Backend() {
@@ -72,11 +73,20 @@ actor class Backend() {
     return message;
   };
 
-  public func addDoc(token : Text, id : Text, name : Text, img : [Nat8], dtype : Text, isVerified : Bool, createdAt : Text) : async Text {
+  public func addDoc(
+    token : Text,
+    id : Text,
+    name : Text,
+    img : [Nat8],
+    dtype : Text,
+    isVerified : Bool,
+    createdAt : Text,
+  ) : async Text {
     let { message; document; user } = await Documents.addDocuments(users, token, id, name, img, dtype, isVerified, createdAt);
 
     if (message == "200") {
       users.put(user.id, user);
+      Debug.print(debug_show (document.id));
       documents.put(document.id, document);
     };
 
@@ -144,6 +154,51 @@ actor class Backend() {
 
   public query func getAllUser() : async [(Text, Types.User)] {
     return Iter.toArray(users.entries());
+  };
+
+  type GetDocumentResponse = {
+    message : Text;
+    doc : Types.Document;
+  };
+
+  public query func getDoc(id : Text) : async GetDocumentResponse {
+    switch (documents.get(id)) {
+      case (?doc) {
+        return {
+          message = "200";
+          doc = doc;
+        };
+      };
+      case (null) {
+        {
+          message = "404";
+          doc = emptyDocument;
+        };
+      };
+    };
+  };
+
+  public func verifyUser(token : Text) : async Text {
+    switch (users.get(token)) {
+      case (?user) {
+        var value = false;
+
+        if (user.isVerified) {
+          value := false;
+        } else {
+          value := true;
+        };
+
+        let updatedUser = {
+          user with isVerified = value;
+        };
+        users.put(updatedUser.id, updatedUser);
+        return "200";
+      };
+      case (null) {
+        return "404";
+      };
+    };
   };
 
 };

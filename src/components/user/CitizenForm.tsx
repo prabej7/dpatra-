@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRightIcon } from "lucide-react";
+import { backend } from "@/declarations/export";
+import { toast } from "react-toastify";
+import { Spinner } from "../ui/spinner";
 
 // Define the Zod schema for validation
 const formSchema = z.object({
@@ -29,22 +32,41 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 const CitizenForm: React.FC = () => {
+    const [id, setId] = useState<string>("");
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormSchemaType>({
         resolver: zodResolver(formSchema),
     });
+    const [dp, setDP] = useState<number[]>([]);
+    const onSubmit = async (data: FormSchemaType) => {
+        const { address, password, day, fullname, gender, martialStatus, month, year, czid, nid, pan } = data;
 
-    const onSubmit = (data: FormSchemaType) => {
-        console.log("Form data:", data);
-        // Handle form submission
+        try {
+            const { message, token } = await backend.registerUser(fullname, password, `${year}-${month}-${day}`, martialStatus, gender, address, String(czid), nid, pan, dp, "user", String(new Date()));
+
+
+            if (message == "200") {
+                setId(token);
+                return toast.success("Register Successfully!")
+            }
+
+            toast.error(message);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { files } = e.target;
+        if (files && files[0]) {
+            const imageByteData: number[] = [...new Uint8Array(await files[0].arrayBuffer())];
+            setDP(imageByteData);
+        }
 
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+            <p>Account ID: {id}</p>
             <Input placeholder="Full Name" {...register("fullname")} />
             {errors.fullname && <p className="text-red-500">{errors.fullname.message}</p>}
 
@@ -78,7 +100,7 @@ const CitizenForm: React.FC = () => {
             {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
 
             <Button disabled={isSubmitting} variant="pri" type="submit">
-                Submit
+                {isSubmitting ? <Spinner /> : "Register"}
             </Button>
         </form>
     );

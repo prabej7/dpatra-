@@ -4,6 +4,9 @@ import { Check, X } from 'lucide-react';
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Dialogue } from "@/components"
+import { toast } from "react-toastify";
+import { backend } from "@/declarations/export";
+import { Spinner } from "../ui/spinner";
 
 interface Props {
     users: [string, User][]
@@ -12,14 +15,32 @@ interface Props {
 const Table: React.FC<Props> = ({ users: u }) => {
     const [users, setUsers] = useState<[string, User][]>(u);
     const [selectedUser, setSelectedUser] = useState<User>();
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const handleVerify = (id: string, opt: boolean) => {
+    const handleVerify = async (id: string, opt: boolean) => {
+        setLoading(true);
+        try {
+            const response = await backend.verifyUser(id);
+            console.log(response);
 
-        setUsers((prevUsers) =>
-            prevUsers.map(([userId, user]) =>
-                userId === id ? [userId, { ...user, isVerified: opt }] : [userId, user]
-            )
-        );
+            if (response == "200") {
+                setUsers((prevUsers) =>
+                    prevUsers.map(([userId, user]) =>
+                        userId === id ? [userId, { ...user, isVerified: opt }] : [userId, user]
+                    )
+                );
+            } else {
+                console.log(response);
+                toast.error("Something went wrong.");
+            }
+
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong.")
+        } finally {
+            setLoading(false);
+        }
+
         setSelectedUser(undefined);
     };
 
@@ -129,7 +150,7 @@ const Table: React.FC<Props> = ({ users: u }) => {
                                         handleVerify(id, true);
                                     }}
                                 >
-                                    <Check />
+                                    {loading ? <Spinner /> : <Check />}
                                 </Button>
                             )}
                         </th>

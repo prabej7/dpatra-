@@ -1,7 +1,8 @@
 import { Route, RouteProps, Routes } from 'react-router-dom';
 import './App.css';
-import { Account, Citizens, Login, Register } from './pages';
-
+import { Account, Citizens, Login, Register, Documents, Transactions, Properties } from './pages';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const routes: RouteProps[] = [
   {
     path: "/register",
@@ -18,6 +19,18 @@ const routes: RouteProps[] = [
   {
     path: "/account/citizens",
     element: <Citizens />
+  },
+  {
+    path: "/account/documents",
+    element: <Documents />
+  },
+  {
+    path: "/account/transactions",
+    element: <Transactions />
+  },
+  {
+    path: "/account/properties",
+    element: <Properties />
   }
 ]
 
@@ -30,6 +43,7 @@ function App() {
           return <Route key={i} path={path} element={element} />
         })}
       </Routes>
+      <ToastContainer />
     </div>
   );
 }

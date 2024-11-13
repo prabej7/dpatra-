@@ -3,6 +3,7 @@ import { emptyDocument; emptyUser } "Empty";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
+import Debug "mo:base/Debug";
 import HashIt "HashIt";
 
 module {
@@ -31,7 +32,7 @@ module {
           case (?existingDoc) {
 
             return {
-              message = "200";
+              message = "Document already exists";
               document = existingDoc;
               user = emptyUser;
             };
@@ -53,8 +54,10 @@ module {
               documents = Iter.toArray(documents.entries());
             };
 
+            
+
             return {
-              message = "Document added successfully.";
+              message = "200";
               document = newDocument;
               user = updatedUser;
             };

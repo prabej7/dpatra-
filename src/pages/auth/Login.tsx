@@ -27,6 +27,7 @@ const Login: React.FC = () => {
         functionName: 'getAllUser'
     });
 
+    console.log(data)
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();

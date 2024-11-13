@@ -4,6 +4,7 @@ import Section from "@/components/Section";
 import { useAuth } from "@/hooks";
 import { useUser } from "@/store";
 import { convertDP } from "@/utils";
+import { Transfer } from "./components";
 
 const Account: React.FC = () => {
     const { isUserLoading } = useAuth()
@@ -14,7 +15,7 @@ const Account: React.FC = () => {
 
     const img = convertDP(user.dp);
 
-    return <Section selected="Dashboard" title="Dashboard" >
+    return <Section selected="Dashboard" title="Dashboard" titleOptions={<Transfer />}  >
         <UserInfos />
     </Section>
 };

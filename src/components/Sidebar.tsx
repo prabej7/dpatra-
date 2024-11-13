@@ -24,7 +24,7 @@ const items = [
     },
     {
         title: "Transactions",
-        url: "/account/documents",
+        url: "/account/transactions",
         icon: <ArrowLeftRight />
     },
     {
