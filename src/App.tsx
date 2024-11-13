@@ -3,6 +3,7 @@ import './App.css';
 import { Account, Citizens, Login, Register, Documents, Transactions, Properties } from './pages';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from './hooks';
 const routes: RouteProps[] = [
   {
     path: "/register",
@@ -35,7 +36,7 @@ const routes: RouteProps[] = [
 ]
 
 function App() {
-
+  useAuth()
   return (
     <div className="App">
       <Routes>
