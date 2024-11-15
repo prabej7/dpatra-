@@ -6,13 +6,15 @@ import Types "types/Types";
 import User "mods/User";
 import Transaction "mods/Transaction";
 import Documents "mods/Documents";
-import { emptyUser; emptyDocument } "mods/Empty";
+import { emptyUser; emptyDocument; emptyProperty } "mods/Empty";
 import Access "mods/Access";
+import Property "mods/Property";
 
 actor class Backend() {
   let users = HashMap.HashMap<Text, Types.User>(0, Text.equal, Text.hash);
   let documents = HashMap.HashMap<Text, Types.Document>(0, Text.equal, Text.hash);
   let transactions = HashMap.HashMap<Text, Types.Transaction>(0, Text.equal, Text.hash);
+  let properties = HashMap.HashMap<Text, Types.Property>(0, Text.equal, Text.hash);
 
   type RegisterUserResponse = {
     message : Text;
@@ -101,6 +103,30 @@ actor class Backend() {
     };
 
     message;
+  };
+
+  public func registerProperty(
+    owner : Text,
+    regNo : Text,
+    img : [Nat8],
+    valuation : Nat,
+    proptype : Text,
+    lat : ?Text,
+    lon : ?Text,
+    createdAt : Text,
+  ) : async Text {
+    let {
+      message;
+      property;
+      user;
+    } = await Property.register(properties, users, owner, regNo, img, valuation, proptype, lat, lon, createdAt);
+
+    if (message == "200") {
+      users.put(user.id, user);
+      properties.put(property.id, property);
+    };
+
+    return message;
   };
 
   //Query Functions
@@ -197,6 +223,27 @@ actor class Backend() {
       };
       case (null) {
         return "404";
+      };
+    };
+  };
+
+  type GetProperty = {
+    message : Text;
+    property : Types.Property;
+  };
+  public query func getProperty(id : Text) : async GetProperty {
+    switch (properties.get(id)) {
+      case (?value) {
+        {
+          message = "200";
+          property = value;
+        };
+      };
+      case (null) {
+        {
+          message = "404";
+          property = emptyProperty;
+        };
       };
     };
   };

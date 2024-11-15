@@ -15,7 +15,7 @@ const FindDoc: React.FC = () => {
     const [doc, setDoc] = useState<Document>();
     const [isLoading, setLoading] = useState<boolean>(false);
     const handleFind = async () => {
-        console.log("ok")
+       
         setLoading(true);
         try {
             const { message, doc } = await backend.getDoc(docId);

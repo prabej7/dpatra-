@@ -8,8 +8,6 @@ import { backend } from '@/declarations/export';
 import { toast } from 'react-toastify';
 import MapSheet from '@/components/user/Map/MapSheet';
 import { Spinner } from '@/components/ui/spinner';
-import { useState } from 'react';
-import { FindProperty } from './components';
 
 const schema = z.object({
   regNo: z.string().min(1, {
@@ -37,7 +35,6 @@ const schema = z.object({
 type formField = z.infer<typeof schema>;
 
 const RegisterProperty: React.FC = () => {
-  const [dp, setDP] = useState<number[]>([]);
   const {
     register,
     formState: { errors, isSubmitting },
@@ -73,27 +70,12 @@ const RegisterProperty: React.FC = () => {
       }
       return toast.error(response);
     } catch (error) {
-      console.log(error);
       return toast.error('Something went wrong.');
     }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (files && files[0]) {
-      const imageByteData: number[] = [
-        ...new Uint8Array(await files[0].arrayBuffer()),
-      ];
-      setDP(imageByteData);
-    }
-  };
-
   return (
-    <Section
-      title="Register Property"
-      selected="Properties"
-      titleOptions={<FindProperty />}
-    >
+    <Section title="Register Property" selected="Register Property">
       <div>
         <form
           className="flex flex-col gap-3 mt-6 w-96"
@@ -130,7 +112,6 @@ const RegisterProperty: React.FC = () => {
           {errors.propertyType && (
             <p className="text-red-500">{errors.propertyType.message}</p>
           )}
-          <Input type="file" onChange={handleFileChange} />
           <Button type="submit" disabled={isSubmitting} variant="pri">
             {isSubmitting ? <Spinner /> : 'Register'}
           </Button>

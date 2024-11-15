@@ -1,9 +1,7 @@
-const express = require("express");
-    const {helloWorld} = require("../controllers/user.controller");
-    const {helloMiddleware} = require("../middlewares/hello.middleware");
-    const router = express.Router();
-    
-    router.get("/", helloMiddleware, helloWorld);
-    
-    module.exports = router;
-    
+import { Router } from 'express';
+import { login } from '../controllers/user.controller';
+
+const router = Router();
+router.route('/login').post(login);
+
+export default router;

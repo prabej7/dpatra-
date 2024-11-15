@@ -1,13 +1,12 @@
-const {random} = require("../utils/random");
-    // Import models here
-    // const { User } = require("../models/user.model");
-    
-    const helloWorld = (req, res) => {
-        console.log(`The request message is: ${req.message}`);
-        console.log("Random number: ", random(10, 100));
-        return res.status(200).send("Hello World!");
-    }
-    
-    module.exports = {
-        helloWorld,
-    }
+import { backend } from '../index.js';
+import { stringify } from 'json-bigint';
+
+export const login = async (res, req) => {
+  try {
+    const { userID, password } = req.body;
+    const response = await backend.login(userID, password);
+    return res.status(Number(response.message)).json(stringify(response));
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error.' });
+  }
+};

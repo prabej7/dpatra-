@@ -26,7 +26,7 @@ const TransactionsTable: React.FC<Props> = ({ limit }) => {
                 selectTransaction(undefined);
             }} children={
                 <div className="flex gap-24" >
-                    <div>
+                    <div className="w-48" >
                         <p>Transaction ID</p>
                         <p>From</p>
                         <p>To</p>

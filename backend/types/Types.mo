@@ -4,7 +4,7 @@ module {
 
   public type Users = HashMap.HashMap<Text, User>;
   public type Documents = HashMap.HashMap<Text, Document>;
-
+  public type Properties = HashMap.HashMap<Text, Property>;
   public type User = {
     id : Text;
     fullName : Text;
@@ -62,8 +62,9 @@ module {
     img : [Nat8];
     valuation : Nat;
     proptype : Text;
-    coordinates : ?Coordinates;
-    createdAt : Nat;
+    lat: ?Text;
+    lon: ?Text;
+    createdAt : Text;
   };
 
   public type Coordinates = {

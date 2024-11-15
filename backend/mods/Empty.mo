@@ -45,4 +45,19 @@ module {
     createdAt = "";
   };
 
+  public let emptyProperty : Types.Property = {
+    id = "";
+    owner = {
+      id = "";
+      fullName = "";
+    };
+    regNo = "";
+    img = [];
+    valuation = 0;
+    lat = null;
+    lon = null;
+    createdAt = "";
+    proptype = ""
+  };
+
 };
