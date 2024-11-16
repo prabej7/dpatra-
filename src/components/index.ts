@@ -9,7 +9,8 @@ import Sheets from './user/Sheet';
 import TransactionsTable from './user/TransactionsTable';
 import UserPieChart from './user/UserPieChart';
 import UserBarChart from './user/UsersBar';
-
+import Mobile from './user/Mobile';
+import TabBar from './user/TabBar';
 export {
   Register,
   Table,
@@ -22,4 +23,6 @@ export {
   TransactionsTable,
   UserPieChart,
   UserBarChart,
+  Mobile,
+  TabBar
 };

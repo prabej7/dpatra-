@@ -8,6 +8,10 @@ import {
   Documents,
   Transactions,
   Properties,
+  Home,
+  MobileHome,
+  MobileAccount,
+  TaxBilling,
 } from './pages';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -41,6 +45,22 @@ const routes: RouteProps[] = [
   {
     path: '/account/properties',
     element: <Properties />,
+  },
+  {
+    path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/mobile/',
+    element: <MobileHome />,
+  },
+  {
+    path: '/mobile/account',
+    element: <MobileAccount />,
+  },
+  {
+    path: '/account/billing',
+    element: <TaxBilling />,
   },
 ];
 

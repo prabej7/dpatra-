@@ -15,7 +15,7 @@ const Section: React.FC<Props> = ({
   titleOptions,
 }) => {
   return (
-    <div className="flex w-full max-h-screen overflow-y-clip">
+    <div className="flex w-full min-h-screen ">
       {/* Sidebar with fixed width */}
       <AppSidebar selected={selected} />
 
