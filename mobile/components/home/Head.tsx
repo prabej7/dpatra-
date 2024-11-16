@@ -1,16 +1,24 @@
-import { View, Text, StyleSheet } from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
-import { Button } from 'tamagui';
-import colors from '@/constants/Colors';
-import useUserStore from '@/store/useUser';
-import { TransferFundsDialogue } from '../user';
+import { View, Text, StyleSheet } from "react-native";
+import Feather from "@expo/vector-icons/Feather";
+import { Button } from "tamagui";
+import colors from "@/constants/Colors";
+import useUserStore from "@/store/useUser";
+import { TransferFundsDialogue } from "../user";
+import useAuth from "@/hooks/useAuth";
+
 const Header: React.FC = () => {
   const { user } = useUserStore();
+  const { fetchUser } = useAuth();
   return (
     <View>
       <View style={styles.topHead}>
         <Text style={styles.name}>Hi, {user?.fullName}</Text>
-        <Feather name="user" size={24} color="black" />
+        <Feather
+          name="user"
+          size={24}
+          color="black"
+          onPress={() => fetchUser()}
+        />
       </View>
       <View style={styles.bottomHead}>
         <View style={styles.balance}>
@@ -21,7 +29,7 @@ const Header: React.FC = () => {
           <Button
             style={{
               backgroundColor: colors.light.primary,
-              color: '#ffffff',
+              color: "#ffffff",
               borderRadius: 50,
               paddingHorizontal: 24,
             }}
@@ -33,7 +41,7 @@ const Header: React.FC = () => {
               <Button
                 style={{
                   backgroundColor: colors.light.primary,
-                  color: '#ffffff',
+                  color: "#ffffff",
                   borderRadius: 50,
                   paddingHorizontal: 24,
                 }}
@@ -52,38 +60,38 @@ export default Header;
 
 const styles = StyleSheet.create({
   name: {
-    fontFamily: 'Medium',
+    fontFamily: "Medium",
     fontSize: 20,
   },
   topHead: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   balance: {},
   bottomHead: {
     paddingVertical: 48,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     gap: 24,
   },
   currentBalance: {
-    fontFamily: 'Regular',
+    fontFamily: "Regular",
     fontSize: 16,
-    color: '#a4a4a4',
-    textAlign: 'center',
+    color: "#a4a4a4",
+    textAlign: "center",
   },
   balanceText: {
-    fontFamily: 'InterBold',
-    textAlign: 'center',
+    fontFamily: "InterBold",
+    textAlign: "center",
     fontSize: 42,
     color: colors.light.text,
   },
   options: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 24,
   },
 });

@@ -10,10 +10,12 @@ import { toast } from 'react-toastify';
 import UserDetails from './components/UserDetails';
 import Billing from './components/Billing';
 import { io, Socket } from 'socket.io-client';
+import { useUser } from '@/store';
 const TaxBilling: React.FC = () => {
   const [userid, setUserID] = useState<string>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
+  const { user: admin } = useUser();
   const [{ token }] = useCookies(['token']);
 
   const [socket, setSocket] = useState<Socket>();
@@ -21,25 +23,51 @@ const TaxBilling: React.FC = () => {
   const establishConnection = useCallback(() => {
     const socket = io('http://192.168.43.121:5000/');
     setSocket(socket);
+    socket?.emit('id', token);
   }, []);
 
   useEffect(() => {
     establishConnection();
+
+    socket?.on('error', () => {
+      toast.error('User is not connected.');
+    });
+
+    socket?.on('receive-pay-success', () => {
+      console.log('ok');
+      toast.success('Payment Received.');
+    });
+
+    socket?.on('pay-decline', () => {
+      toast.error('Payment Declined');
+    });
   }, []);
+
+  const handleRequest = async (amount: number, purpose: string) => {
+    socket?.emit('req-pay', {
+      requester: {
+        id: admin.id,
+        fullName: admin.fullName,
+      },
+      receiver: userid,
+      amount,
+      purpose,
+    });
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const { message, user } = await backend.getUser(
-        String(token),
         String(userid),
+        String(token),
       );
 
       if (message == '200') {
         setUser(user);
         return;
       }
-
+      console.log(message);
       toast.error(message);
     } catch (error) {
       toast.error('Something went wrong.');
@@ -65,7 +93,7 @@ const TaxBilling: React.FC = () => {
           user={user}
         />
       )}
-      {user && <Billing />}
+      {user && <Billing onRequest={handleRequest} />}
     </Section>
   );
 };

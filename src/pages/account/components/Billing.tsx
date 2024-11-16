@@ -2,7 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
-const Billing: React.FC = () => {
+interface Props {
+  onRequest: (amount: number, purpose: string) => void;
+}
+
+const Billing: React.FC<Props> = ({ onRequest }) => {
   const [amount, setAmount] = useState<number>();
   return (
     <>
@@ -12,7 +16,12 @@ const Billing: React.FC = () => {
           placeholder="Amount"
           onChange={(e) => setAmount(Number(e.target.value))}
         />
-        <Button variant="pri">Request</Button>
+        <Button
+          onClick={() => amount && onRequest(amount, 'Tax')}
+          variant="pri"
+        >
+          Request
+        </Button>
       </div>
     </>
   );

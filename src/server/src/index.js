@@ -47,7 +47,29 @@ const users = {};
 // Socket.io event handling
 io.on('connection', (socket) => {
   socket.on('id', (data) => {
-    users[data] = socket.id;
+    console.log(data);
+    users[data] = String(socket.id);
+  });
+
+  socket.on('req-pay', (data) => {
+    const receiverId = data.receiver;
+
+    if (users[receiverId]) {
+      // Emit to the receiver's socket if they are connected
+      io.to(users[receiverId]).emit('receive-pay-request', data);
+    } else {
+      io.to(users[data.requester.id]).emit('error', 'User is not live.');
+    }
+  });
+
+  socket.on('pay-accept', (data) => {
+    console.log(users[data.id]);
+    io.to(users[data.id]).emit('receive-pay-success');
+  });
+
+  socket.on('pay-decline', (data) => {
+    console.log(users[data]);
+    io.to(users[data]).emit('pay-decline', '');
   });
 
   socket.on('disconnect', () => {

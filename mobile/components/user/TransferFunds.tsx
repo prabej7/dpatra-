@@ -1,9 +1,9 @@
-import { api } from '@/constants/api';
-import colors from '@/constants/Colors';
-import useUserStore from '@/store/useUser';
-import { X } from '@tamagui/lucide-icons';
-import axios, { AxiosError } from 'axios';
-import React, { useEffect, useState } from 'react';
+import { api } from "@/constants/api";
+import colors from "@/constants/Colors";
+import useUserStore from "@/store/useUser";
+import { X } from "@tamagui/lucide-icons";
+import axios, { AxiosError } from "axios";
+import React, { useEffect, useState } from "react";
 
 import {
   Adapt,
@@ -14,27 +14,32 @@ import {
   Label,
   Sheet,
   Unspaced,
-} from 'tamagui';
-import Alert from './Alert';
-import { Text } from 'react-native';
-import useAuth from '@/hooks/useAuth';
-import BiometricAuth from './useLocalAuth';
+} from "tamagui";
+import Alert from "./Alert";
+import { Text } from "react-native";
+import useAuth from "@/hooks/useAuth";
+import BiometricAuth from "./useLocalAuth";
 
 interface Props {
   button?: React.ReactNode;
   accNo?: number;
+  onClose?: () => void;
 }
-const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
+const TransferFundsDialogue: React.FC<Props> = ({
+  button,
+  accNo,
+  onClose,
+}: Props) => {
   const [modelOpen, setModalOpen] = useState<boolean>(false);
   const [accountID, setAccountID] = useState<number>(0);
   const [amount, setAmount] = useState<number>(0);
-  const [purpose, setPurpose] = useState<string>('');
+  const [purpose, setPurpose] = useState<string>("");
   const [isError, setError] = useState<boolean>(false);
   const [msg, setMsg] = useState<{
     text: string;
     isError: boolean;
   }>({
-    text: '',
+    text: "",
     isError: false,
   });
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -52,7 +57,7 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
     setLoading(true);
     if (await handleBiometricAuth()) {
       try {
-        const response = await axios.post(`${api}/transactions/perform`, {
+        const response = await axios.post(`${api}/perform-transaction`, {
           to: String(accountID),
           from: user?.id,
           amount: String(amount),
@@ -61,12 +66,12 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
 
         if (response.status == 200) {
           setMsg({
-            text: 'Successfully Transfered!',
+            text: "Successfully Transfered!",
             isError: false,
           });
           setAmount(0);
           setAccountID(0);
-          setPurpose('');
+          setPurpose("");
           setModalOpen(false);
         }
       } catch (error) {
@@ -75,11 +80,11 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
         setError(true);
         if (status == 404) {
           setMsg({
-            text: 'Insufficient Funds!',
+            text: "Insufficient Funds!",
             isError: true,
           });
           setMsg({
-            text: 'Something went wrong.',
+            text: "Something went wrong.",
             isError: true,
           });
           return;
@@ -95,7 +100,10 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
     <Dialog
       modal
       open={modelOpen}
-      onOpenChange={() => setModalOpen(!modelOpen)}
+      onOpenChange={() => {
+        setModalOpen(!modelOpen);
+        if (onClose) onClose();
+      }}
     >
       <Dialog.Trigger asChild onPress={() => setModalOpen(!modelOpen)}>
         {button}
@@ -107,13 +115,13 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
           description="Successfully transfered funds."
           onClick={() =>
             setMsg({
-              text: '',
+              text: "",
               isError: false,
             })
           }
         />
       )}
-      <Adapt when="sm" platform="touch">
+      <Adapt when="sm" platform="touch" children={{}}>
         <Sheet animation="medium" zIndex={200000} modal dismissOnSnapToBottom>
           <Sheet.Frame padding="$4" gap="$4">
             <Adapt.Contents />
@@ -139,9 +147,9 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
           bordered
           elevate
           key="content"
-          animateOnly={['transform', 'opacity']}
+          animateOnly={["transform", "opacity"]}
           animation={[
-            'quicker',
+            "quicker",
             {
               opacity: {
                 overshootClamping: true,
@@ -162,7 +170,7 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
             </Label>
             <Input
               value={String(accountID)}
-              onChangeText={(text) => setAccountID(Number(text))}
+              onChangeText={(text: string) => setAccountID(Number(text))}
               flex={1}
               keyboardType="number-pad"
               id="accountNo"
@@ -176,7 +184,7 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
             <Input
               flex={1}
               value={String(amount)}
-              onChangeText={(text) => setAmount(Number(text))}
+              onChangeText={(text: string) => setAmount(Number(text))}
               id="amount"
               keyboardType="number-pad"
               placeholder="0"
@@ -197,17 +205,17 @@ const TransferFundsDialogue: React.FC<Props> = ({ button, accNo }) => {
           <Button
             disabled={isLoading}
             style={{
-              backgroundColor: !isLoading ? colors.light.primary : '#a4a4a4',
+              backgroundColor: !isLoading ? colors.light.primary : "#a4a4a4",
               color: colors.light.white,
             }}
             onPress={handleSubmit}
           >
-            {isLoading ? 'Transfering...' : 'Transfer'}
+            {isLoading ? "Transfering..." : "Transfer"}
           </Button>
           <Text
             style={{
-              color: msg.isError ? 'red' : 'green',
-              textAlign: 'center',
+              color: msg.isError ? "red" : "green",
+              textAlign: "center",
             }}
           >
             {msg.text}
